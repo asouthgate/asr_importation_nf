@@ -1,8 +1,25 @@
-import sys
-from pyimpasr.treetools import get_treefile_tip_labels
+import get_treefile_tip_labels
+from Bio import Phylo
 
-def get_taxon_states(newick):
+def get_treefile_tip_labels(newick_fname):
     """
+    Extract tip labels from a newick file.
+
+    Args:
+        newick_fname: newick file name
+
+    Returns:
+        labs: tip label names
+    """
+    treegen = Phylo.parse(newick_fname, "newick")
+    tree = next(treegen)
+    labs = [n.name for n in tree.get_terminals()]
+    return labs
+
+def get_treefile_tip_state_mapping(newick):
+    """
+    Extract tip label: state mapping from newick file.
+
     Args:
         newick: .newick tree file
     
@@ -28,14 +45,4 @@ def get_taxon_states(newick):
             loc = "world"
         yield (l, state)
 
-
-if __name__ == "__main__":
-    import argparse as ap
-    ap = ArgumentParser()
-    ap.add_argument("newick_file", help="Newick file to retrieve tip label, state csv from")
-    args = ap.parse_args()
-    
-    print("tip\tstate")
-    for l, state in get_taxon_states(args.newick_file)
-        print(l.rstrip(), loc, sep='\t')
 
