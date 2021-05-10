@@ -1,8 +1,11 @@
 #!/usr/bin/env nextflow
 
+nextflow.enable.dsl=2
+
 newickFile = file(params.newick)
 dateCsvFile = file(params.csv)
 outFolder = "${params.output}"
+
 
 /* 
  * Parse states from newick tip labels
@@ -16,7 +19,7 @@ process stateCsvFromNewick {
         file newickFile
 
     output:
-        file("states.csv") into stateCsvChannel
+        path("states.csv"), emit: state_csv
 
     """
     cal_tiplab_state_mapping_from_tree.py ${newickFile} > states.csv
@@ -32,10 +35,10 @@ process gotreeASR {
 
     input:
         file newickFile
-        file stateCsv from stateCsvChannel
+        file stateCsv
 
     output:
-        file("asrtree.newick") into asrTreeChannel
+        path("asrtree.newick"), emit: asrtree
 
     """
     gotree acr --algo acctran -i ${newickFile} --states ${stateCsv}  -o asrtree.newick --random-resolve
@@ -53,15 +56,23 @@ process extractTransitionCsv {
     publishDir outFolder
 
     input:
-        file("asrtree.newick") from asrTreeChannel
+        file("asrtree.newick")
         file dateCsvFile
 
     output:
-        folder("root_output_folder"), file("imported_from.csv") into importedFromCsvChannel
+        tuple path("root_output_folder"), path("imported_from.csv")
+        path("imported_from.csv")
 
     """
+    mkdir root_output_folder
     extract_subtrees_state.py asrtree.newick -1 root_output_folder > imported_from.csv
     get_extracted_trees_csv.py root_output_folder/*[0-9] > clusters.csv
     merge_cluster_data_csv.py clusters.csv ${dateCsvFile} clusters_and_dates.csv
     """
+}
+
+
+workflow {
+    stateCsvFromNewick(newickFile)
+    extractTransitionCsv(gotreeASR(newickFile, stateCsvFromNewick.out), dateCsvFile)
 }
