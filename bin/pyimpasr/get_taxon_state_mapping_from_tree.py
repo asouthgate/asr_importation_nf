@@ -16,12 +16,12 @@ def get_treefile_tip_labels(newick_fname):
     labs = [n.name for n in tree.get_terminals()]
     return labs
 
-def get_treefile_tip_state_mapping(newick):
+def get_treefile_tip_state_mapping(newick_fname):
     """
     Extract tip label: state mapping from newick file.
 
     Args:
-        newick: .newick tree file
+        newick_fname: .newick tree file name
     
     Yields:
         mapping: tuples (label, state)
