@@ -1,0 +1,4 @@
+USAGE:
+
+    nextflow main.nf --newick test.newick --csv test_metadata.csv --output test_output_folder
+
