@@ -1,14 +1,26 @@
 #!/usr/bin/env nextflow
 
 newickFile = file(params.newick)
-metadataCsvFile = file(params.csv)
+dateCsvFile = file(params.csv)
 outFolder = "${params.output}"
 
 /* 
- * Convert tip labels to a state csv
+ * Parse states from newick tip labels
+ * and output a csv mapping labels to states
  */
-process tiplabs2statecsv {
+process stateCsvFromNewick {
 
+    publishDir outFolder
+
+    input:
+        file newickFile
+
+    output:
+        file stateCsv into stateCsvChannel
+
+    """
+    cal_tiplab_state_mapping_from_tree.py ${newickFile} > stateCsv
+    """
 }
 
 /*  
@@ -16,6 +28,13 @@ process tiplabs2statecsv {
  */
 process gotreeASR {
 
+    input:
+
+    output:
+
+    """
+
+    """
 }
 
 /*  
@@ -23,6 +42,13 @@ process gotreeASR {
  */
 process extractTransitionSubtrees {
 
+    input:
+
+    output:
+
+    """
+
+    """
 }
 
 /*  
@@ -30,6 +56,13 @@ process extractTransitionSubtrees {
  */
 process mergeSubtreeWithDates {
 
+    input:
+
+    output:
+
+    """
+
+    """
 }
 
 
