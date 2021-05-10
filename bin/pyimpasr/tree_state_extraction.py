@@ -1,5 +1,31 @@
 from Bio import Phylo
 
+def extract_transition_clades(tree):
+    """Extract subtrees with wales states and non wales parents
+
+    Args:
+        tree: Biopython Phylo tree object (decorated data)
+
+    Returns:
+        subtrees: list of subtrees
+    """
+    extracted_clades = set()
+
+    nodes = [n for n in tree.get_nonterminals()]
+    sys.stderr.write("Got %d non-terminal nodes\n" % len(nodes))
+    for clade in nodes:
+        for cn in clade:
+            if clade.comment != "wales":
+                if cn.comment == "wales":
+                    cn.parental_loc = clade.comment
+                    extracted_clades.add(cn)
+
+    n_extracted = len(extracted_clades)
+    sys.stderr.write("Got %d extracted clades\n" % n_extracted)
+    if not n_extracted: 
+        raise Exception("No clades extracted!")
+    return [st for st in extracted_clades]
+
 def get_treefile_tip_labels(newick_fname):
     """
     Extract tip labels from a newick file.
