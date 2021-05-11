@@ -5,7 +5,9 @@ import pathlib
 cpath = pathlib.Path(__file__).parent.absolute() 
 sys.path.append( str(cpath / "../bin/") )
 sys.path.append( str(cpath) )
+import datetime as dt
 import pyimpasr.tree_state_extraction as tse
+import pyimpasr.datebinfunc as dbf
 
 class CsvFunctionsTester(unittest.TestCase):
     def test_tip_state_mapping_from_tree(self):
@@ -21,4 +23,16 @@ class CsvFunctionsTester(unittest.TestCase):
         res = sorted([tup for tup in testfunc(newick_fname)])
         for j, tup in enumerate(res):
             self.assertEqual(val_tip_state_mapping[j], tup)
+
+    def test_datebinfunc_cal_bins(unittest.TestCase):
+        get_date = lambda x: dt.datetime.strptime(x, "%Y-%m-%d")
+        start_date = get_date("2020-01-01")
+        end_date = get_date("2020-01-15")
+        bins = dbf.cal_bins(5, start_date, end_date)
+        val_bins = [get_date(x) for x in ["2020-01-01", "2020-01-06", "2020-01-11", "2020-01-16"]]
+        for j, vb in enumerate(val_bins):
+            self.assertEqual(vb, bins[j])
+    
+        
+        
         
