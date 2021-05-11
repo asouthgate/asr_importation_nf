@@ -2,7 +2,7 @@
  * Stratified subsampling of sequences by time
  */
 
-process stratifiedSubampleSequences {
+process stratifiedSubsampleSequences {
 
     input:
         val n_sequences

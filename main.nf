@@ -9,6 +9,8 @@ outFolder = "${params.output}"
 include { stateCsvFromNewick } from "./modules/stateCsvFromNewick.nf"
 include { gotreeASR } from "./modules/gotreeASR.nf"
 include { extractTransitionCsv } from "./modules/calSubtreeCsvFromASR.nf"
+include { stratifiedSubsampleSequences } from "./modules/subsampleSequences.nf"
+
 
 process publish {
 
@@ -30,4 +32,7 @@ workflow {
     stateCsvFromNewick(newickFile)
     extractTransitionCsv(gotreeASR(newickFile, stateCsvFromNewick.out), dateCsvFile)
     publish(extractTransitionCsv.out[1])
+    if (params.run_beast) {
+        stratifiedSubsampleSequences(10000, dateCsvFile)
+    }
 }
