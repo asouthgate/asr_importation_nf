@@ -14,11 +14,11 @@ N_SAMPLES = int(sys.argv[1])
 #metadata_file = "res/cog_2021-01-31_all_metadata.wlineages.csv"
 metadata_file = sys.argv[2]
 df = pd.read_csv(metadata_file, dtype=str)
-df = df[['adm1','central_sample_id','collection_date','uk_lineage']]
-df = df[np.logical_not(df['central_sample_id'].str.contains("MILK"))]
-df = df[np.logical_not(df['central_sample_id'].str.contains("QEUH"))]
-df = df[np.logical_not(df['central_sample_id'].str.contains("CAMC"))]
-df = df[np.logical_not(df['central_sample_id'].str.contains("ALDP"))]
+df = df[['adm1','sequence_name','sample_date','uk_lineage']]
+df = df[np.logical_not(df['sequence_name'].str.contains("MILK"))]
+df = df[np.logical_not(df['sequence_name'].str.contains("QEUH"))]
+df = df[np.logical_not(df['sequence_name'].str.contains("CAMC"))]
+df = df[np.logical_not(df['sequence_name'].str.contains("ALDP"))]
 
 # Drop any na
 df = df.dropna()
@@ -30,11 +30,11 @@ wales_lineages = set(wales_df['uk_lineage'])
 lin_in_wal_df = df.loc[df['uk_lineage'].isin(wales_lineages)]
 
 # Assign to date bins
-all_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in df['collection_date']]
-wales_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in wales_df['collection_date']]
+all_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in df['sample_date']]
+wales_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in wales_df['sample_date']]
 bindaysize = 28
 bins = dbf.cal_bins(bindaysize, min(wales_dates), max(wales_dates)+datetime.timedelta(days=bindaysize))
-liw_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in lin_in_wal_df['collection_date'].values]
+liw_dates = [dt.datetime.strptime(d, "%Y-%m-%d") for d in lin_in_wal_df['sample_date'].values]
 
 lin_in_wal_df['date_bin'] = [bins[dbf.find_bin(d, bins)] for d in liw_dates]
 wales_df['date_bin'] = [bins[dbf.find_bin(d, bins)] for d in wales_dates]
@@ -55,10 +55,10 @@ for g, subdf in lin_in_wal_df.groupby("date_bin"):
     wls_samp = wls_subdf.sample(n_wls_samples, replace=False)
     nonwls_subdf = subdf.loc[subdf['adm1'] != "UK-WLS"]
     nonwls_samp = nonwls_subdf.sample(n-n_wls_samples,replace=False)
-    for samp in nonwls_samp['central_sample_id']: sampled.add(samp)
-    for samp in wls_samp['central_sample_id']: sampled.add(samp)
+    for samp in nonwls_samp['sequence_name']: sampled.add(samp)
+    for samp in wls_samp['sequence_name']: sampled.add(samp)
     print(g, n_wls_samples, n-n_wls_samples, n)
 
 
-finaldf = df.loc[df['central_sample_id'].isin(sampled)]
+finaldf = df.loc[df['sequence_name'].isin(sampled)]
 finaldf.to_csv(sys.argv[3], index=False)
