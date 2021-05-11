@@ -1,3 +1,5 @@
+Run ASR for imports via MP or MCMC
+
 USAGE:
 
     nextflow main.nf --newick test.newick --csv test_metadata.csv --output test_output_folder
