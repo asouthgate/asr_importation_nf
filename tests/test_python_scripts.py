@@ -9,7 +9,7 @@ import datetime as dt
 import pyimpasr.tree_state_extraction as tse
 import pyimpasr.datebinfunc as dbf
 
-class CsvFunctionsTester(unittest.TestCase):
+class pyimpasrTester(unittest.TestCase):
     def test_tip_state_mapping_from_tree(self):
         newick_fname = "tests/test_data/test.newick"
         val_tip_state_mapping = sorted([
@@ -24,7 +24,7 @@ class CsvFunctionsTester(unittest.TestCase):
         for j, tup in enumerate(res):
             self.assertEqual(val_tip_state_mapping[j], tup)
 
-    def test_datebinfunc_cal_bins(unittest.TestCase):
+    def test_datebinfunc_cal_bins_hist(self):
         get_date = lambda x: dt.datetime.strptime(x, "%Y-%m-%d")
         start_date = get_date("2020-01-01")
         end_date = get_date("2020-01-15")
@@ -32,6 +32,18 @@ class CsvFunctionsTester(unittest.TestCase):
         val_bins = [get_date(x) for x in ["2020-01-01", "2020-01-06", "2020-01-11", "2020-01-16"]]
         for j, vb in enumerate(val_bins):
             self.assertEqual(vb, bins[j])
+
+        datestrs_to_bin = [
+                        "2019-12-15", "2020-01-01", "2020-01-01", "2020-01-11", "2020-01-12",
+                        "2020-01-05", "2020-01-09", "2020-01-02", "2020-01-03"
+                            ]
+        dates_to_bin = [get_date(x) for x in datestrs_to_bin] 
+        hist = dbf.histogram(dates_to_bin, bins)
+        val_hist = [1+1+1, 1+1+1, 1+1, 1]
+        for vi, v in enumerate(val_hist):
+            self.assertEqual(v, hist[vi])
+
+        
     
         
         
