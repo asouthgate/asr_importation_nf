@@ -12,6 +12,7 @@ process stratifiedSubsampleSequences {
     output:
         file("sample_sequence_names.csv")
         file("sample.hfix.m.fa")
+        file("sample_dates.tsv")
     
     """
     # Retrieve a stratified sample
