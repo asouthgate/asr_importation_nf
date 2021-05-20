@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-import sys
-from Bio import Phylo
-import sys
-from pyimpasr.tree_state_extraction import extract_transition_clades
-
 """
 This script can be used to extract taxon sets which are putative imported mono clades.
 """
 
+import sys
+from pathlib import Path
+from Bio import Phylo
+from pyimpasr.tree_state_extraction import extract_transition_clades
 
 if __name__ == "__main__":
 
@@ -26,13 +25,14 @@ if __name__ == "__main__":
 
 
     # Output those that are big enough
-    odir = sys.argv[3] + "/"
+    opath = Path(sys.argv[3])
 
-    if len(bigenough) > 10000: assert False, "Too big. Something gone wrong %d" % len(bigenough)
+    if len(bigenough) > 10000: 
+        assert False, "%d is too big. Something went wrong" % len(bigenough)
 
     for li, pair in enumerate(bigenough):
         l, terminals = pair
-        with open((odir + "extracted_subtree_%s") % str(li), "w") as of:
+        with open(opath / ("extracted_subtree_%s" % str(li)), "w") as of:
             for k in terminals: of.write(k.name+"\n")
         print(li, l.parental_loc, sep=",")
 
