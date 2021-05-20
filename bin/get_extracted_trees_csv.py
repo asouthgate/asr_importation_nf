@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+This script simply combines individual files, each representing a cluster, and compiles them into a csv file.
+"""
+
 import sys
 
 print("central_sample_id,cluster")
