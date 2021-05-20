@@ -2,6 +2,10 @@
 
 """
 This script simply combines individual files, each representing a cluster, and compiles them into a csv file.
+The cluster files taken as input are literally just text files with a list of names.
+
+Usage:
+    python3 get_extracted_trees_csv.py list1 list2 list3 ... listn
 """
 
 import sys
