@@ -14,6 +14,6 @@ process runTreeTime {
     """
     sed 's/sequence_name/name/g' ${date_tsv} > names_dates.tsv
     treetime --tree ${tree_newick} --dates names_dates.tsv --aln ${seq_fa} --outdir .
-    Rscript timetree.nexus timetree.newick
+    Rscript nexus2newick.R timetree.nexus timetree.newick
     """
 }
