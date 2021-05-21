@@ -22,7 +22,7 @@ process stratifiedSubsampleSequences {
     cut -f2 -d',' metadata_sample.csv > sample_sequence_names.csv
 
     # Fetch sequences
-    extract_by_token_list_and_rename_unique.py ${alignment_fasta} sample_sequence_names.csv > sample.preqc.hfix.m.fa
+    extract_by_token_list.py ${alignment_fasta} sample_sequence_names.csv > sample.preqc.hfix.m.fa
 
     # Perform auto QC on the sequences
     all_qc.py sample.preqc.hfix.m.fa > sample.hfix.m.fa

@@ -4,16 +4,16 @@
 
 process injectBEAST {
     input:
-        file subtree_newick
         file aln_fa
         file dates_csv
-        val clockrate
+        file subtree_newick
+        eval clockrate
         
     output:
-        fixed_tree.xml
+        path fixed_tree.xml, emit: beast_xml_file
 
     """
-    beast_injector_fixed_tree_epoch.py --aln ${aln_fa} --dates ${dates_csv} --fixed_tree subtree_newick --clock_rate ${clockrate} --template ${template} > fixed_tree.xml
+    beast_injector_fixed_tree_epoch.py --aln ${aln_fa} --dates ${dates_csv} --fixed_tree subtree_newick --clock_rate ${clockrate} --xml_template template_fixed_tree_multiple_epochs.xml > fixed_tree.xml
     """
 
 }

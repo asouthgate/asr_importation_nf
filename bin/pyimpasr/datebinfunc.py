@@ -1,6 +1,39 @@
 import datetime as dt
 import numpy as np
 
+def height2date(height, first_date):
+    """ 
+    Convert tree height in years to a date. 
+
+    Args:
+        height: float tree height in years.
+        first_date: date of the tree root.
+    
+    Returns:    
+        date corresponding to the height up to days.
+    """
+    return first_date + dt.timedelta(days=int(height * 365))
+
+
+def datestr2float(date, format="%Y-%m-%d"):
+    """ 
+    Convert date string to a float representation.
+
+    Args:
+        date: date str e.g. '2021-03-05'
+
+    Returns:
+        f: floating point representation e.g. 2021.xx
+     """
+
+    start = dt.datetime.strptime("2020-01-01", "%Y-%m-%d") 
+    f = 2020
+    delta = dt.datetime.strptime(date, "%Y-%m-%d") - start
+    f += ( delta.days / 365.0 )
+    if datestr.startswith("2021"): assert f > 2021
+    return f
+
+
 def cal_bins(binsize, start_date, end_date):
     """
     Calculates bins of size binsize between start_date and end_date.
