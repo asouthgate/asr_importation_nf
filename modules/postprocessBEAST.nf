@@ -16,10 +16,12 @@ process postprocessBEAST {
     output:
         path("posterior_node_data.csv"), emit: posterior_node_csv
         path("binned_data.csv"), emit: binned_posterior_transition_csv
+        path("binned_data_leaf_only.csv"), emit: binned_posterior_transition_leaf_only_csv
         
     """
     grep tree ${trees} > trees.noheader.newick
     get_posterior_node_data.py --trees trees.noheader.newick --nproc ${maxCpu} > posterior_node_data.csv
     get_binned_node_data.py --root_date ${root_date} --data posterior_node_data.csv > binned_data.csv
+    get_binned_node_data.py --root_date ${root_date} --data posterior_node_data.csv --leaf_only > binned_data_leaf_only.csv
     """
 }

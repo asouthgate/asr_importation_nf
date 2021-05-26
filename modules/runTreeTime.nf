@@ -17,6 +17,8 @@ process runTreeTime {
         path "timetree.newick", emit: time_tree
         env CLOCKRATE, emit: clock_rate
         env ROOT_DATE, emit: root_date
+        path("root_date.txt"), emit: root_date_txt
+        path("dates.tsv"), emit: node_dates
 
     script:
     
@@ -26,7 +28,8 @@ process runTreeTime {
     treetime --tree ${tree_newick} --dates names_dates.tsv --aln ${seq_fa} --outdir . --clock-filter 3
     nexus2newick.R timetree.nexus timetree.newick
     CLOCKRATE=\$(python3 -c "with open('molecular_clock.txt') as f: print([l for l in f][1].split()[1])")
-    ROOT_DATE=\$(sort -k2 dates.tsv | sed -n '2p' | cut -f2)
+    ROOT_DATE=\$(grep NODE_0000000 dates.tsv | cut -f2)
+    echo \$ROOT_DATE > root_date.txt
     """
 
 
