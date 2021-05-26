@@ -15,7 +15,7 @@ def height2date(height, first_date):
     return first_date + dt.timedelta(days=int(height * 365))
 
 
-def datestr2float(date, format="%Y-%m-%d"):
+def datestr2float(datestr, format="%Y-%m-%d"):
     """ 
     Convert date string to a float representation.
 
@@ -28,7 +28,7 @@ def datestr2float(date, format="%Y-%m-%d"):
 
     start = dt.datetime.strptime("2020-01-01", "%Y-%m-%d") 
     f = 2020
-    delta = dt.datetime.strptime(date, "%Y-%m-%d") - start
+    delta = dt.datetime.strptime(datestr, "%Y-%m-%d") - start
     f += ( delta.days / 365.0 )
     if datestr.startswith("2021"): assert f > 2021
     return f

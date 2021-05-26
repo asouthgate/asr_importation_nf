@@ -1,8 +1,12 @@
+outFolder = "${params.output}"
+
 /*
  * Stratified subsampling of taxa data by time
  */
 
 process stratifiedSubsampleSequences {
+
+    publishDir outFolder
 
     input:
         val n_sequences
@@ -10,9 +14,9 @@ process stratifiedSubsampleSequences {
         file alignment_fasta
 
     output:
-        file("sample_sequence_names.csv")
-        file("sample.hfix.m.fa")
-        file("sample_dates.tsv")
+        path("sample_sequence_names.csv"), emit: sample_sequence_names_csv
+        path("sample.hfix.m.fa"), emit: sample_fasta
+        path("sample_dates.tsv"), emit: sample_dates_tsv
     
     """
     # Retrieve a stratified sample

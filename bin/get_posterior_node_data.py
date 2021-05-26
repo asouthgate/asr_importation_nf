@@ -15,7 +15,7 @@ import sys
 from functools import partial
 from io import StringIO
 import datetime as dt
-import datebinfunc as dbf
+import pyimpasr.datebinfunc as dbf
 import argparse as ap
 from Bio import Phylo
 
@@ -42,7 +42,6 @@ def get_node_data(tree):
             results.append((depths[cn], depths[clade], get_locstate(cn), get_locstate(clade), int(cn.is_terminal())))
     return results
 
-
 def work(pair, leaf_only=False):
     hi, handle = pair
     tree = Phylo.read(handle, "newick")
@@ -53,7 +52,7 @@ if __name__ == "__main__":
 
     parser = ap.ArgumentParser()
     parser.add_argument("--trees", required=True)
-    parser.add_argument("--ncpu", type=int, required=True)
+    parser.add_argument("--nproc", type=int, required=True)
     parser.add_argument("--leaf_only", action="store_true", default=False)
     args = parser.parse_args()
 
@@ -61,7 +60,7 @@ if __name__ == "__main__":
     with open(args.trees) as f:
         handles = [(fi,StringIO(treel)) for fi, treel in enumerate(f)]
 
-    with multiprocessing.Pool(processes=args.nthread) as pool:
+    with multiprocessing.Pool(processes=args.nproc) as pool:
         func = partial(work, leaf_only=args.leaf_only)
         results = pool.map(func, handles)
         for quint in results:
