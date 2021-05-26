@@ -6,6 +6,7 @@ newickFile = file(params.newick)
 alnFastaFile = file(params.aln)
 dateCsvFile = file(params.csv)
 outFolder = "${params.output}"
+subsampleSize = params.subsample_size
 
 include { stateCsvFromNewick } from "./modules/stateCsvFromNewick.nf"
 include { gotreeASR } from "./modules/gotreeASR.nf"
@@ -13,8 +14,9 @@ include { extractTransitionCsv } from "./modules/calSubtreeCsvFromASR.nf"
 include { stratifiedSubsampleSequences } from "./modules/subsampleSequences.nf"
 include { extractTreeSubset } from "./modules/extractTreeSubset.nf"
 include { runTreeTime } from "./modules/runTreeTime.nf"
-//include { injectBEAST } from "./modules/injectBEAST.nf"
-
+include { injectBEAST } from "./modules/injectBEAST.nf"
+include { runBEAST } from "./modules/runBEAST.nf"
+include { postprocessBEAST } from "./modules/postprocessBEAST.nf"
 
 process publish {
 
@@ -42,13 +44,22 @@ workflow asrMCMC {
         newick
 
     main:
-        stratifiedSubsampleSequences(10000, dateCsvFile, alnFasta)
+        stratifiedSubsampleSequences(subsampleSize, dateCsvFile, alnFasta)
+
         extractTreeSubset(newick, stratifiedSubsampleSequences.out[0])
-        runTreeTime(extractTreeSubset.out, stratifiedSubsampleSequences.out[1], stratifiedSubsampleSequences.out[2])
+
+        runTreeTime(extractTreeSubset.out, 
+                    stratifiedSubsampleSequences.out.sample_fasta,
+                    stratifiedSubsampleSequences.out.sample_dates_tsv)
+
+        injectBEAST(stratifiedSubsampleSequences.out[1],
+                    stratifiedSubsampleSequences.out[2],
+                    runTreeTime.out.time_tree, runTreeTime.out.clock_rate)
+
+        runBEAST(injectBEAST.out.beast_xml)
+
+        postprocessBEAST(runBEAST.out.treesFile, runTreeTime.out.root_date)
     
-//    emit:
-
-
 }
 
 workflow {
